@@ -51,10 +51,12 @@
             <version>5.0.2.Final</version>
         </dependency>
 
+
+		<!-- MARKDOWN -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<groupId>es.nitaur.markdown</groupId>
+			<artifactId>txtmark</artifactId>
+			<version>0.16</version>
 		</dependency>
 	</dependencies>
 

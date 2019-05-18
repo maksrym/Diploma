@@ -1,5 +1,7 @@
 package config;
 
+import com.github.rjeschke.txtmark.Configuration;
+import com.github.rjeschke.txtmark.Processor;
 import enums.Language;
 import model.Tag;
 import org.springframework.boot.CommandLineRunner;
@@ -39,7 +41,6 @@ public class Application {
 				tags.add(one);
 				tags.add(two);
 				tagRepository.saveAll(tags);
-
 			}
 		};
 	}

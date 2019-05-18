@@ -45,4 +45,59 @@ public class Article {
         this.tags = new ArrayList<>();
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
+    }
+
+    public DateTime getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(DateTime uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public DateTime getLastChange() {
+        return lastChange;
+    }
+
+    public void setLastChange(DateTime lastChange) {
+        this.lastChange = lastChange;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 }
