@@ -17,9 +17,6 @@ import javax.persistence.Entity;
 import java.util.ArrayList;
 
 @SpringBootApplication
-@ComponentScan({"converter", "enums"})
-@EntityScan("model")
-@EnableJpaRepositories("repository")
 public class Application {
 
 	public static void main(String[] args) {
@@ -33,7 +30,6 @@ public class Application {
 			public void run(String... strings) throws Exception {
 				Tag one = new Tag("Batya", Language.ENGLISH);
 				Tag two = new Tag("Syna", Language.ENGLISH);
-
 				one.addChildTag(two);
 				two.setParentTag(one);
 
