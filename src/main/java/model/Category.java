@@ -4,40 +4,42 @@ import enums.Language;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
 @Table(name = "Tags")
-public class Tag {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "categories")
     private List<Article> articles;
 
     @ManyToOne
-    private Tag parentTag;
+    private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentTag")
-    private List<Tag> childTags;
+    @OneToMany(mappedBy = "parentCategory")
+    private List<Category> childCategories;
 
     @Enumerated(EnumType.STRING)
     private Language language;
 
-    protected Tag() {
+    protected Category() {
         this.articles = new ArrayList<>();
-        this.childTags = new ArrayList<>();
+        this.childCategories = new ArrayList<>();
     }
 
-    public Tag(String name, Language language) {
+    public Category(String name, Language language) {
         this();
         this.name = name;
         this.language = language;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -48,24 +50,24 @@ public class Tag {
         this.name = name;
     }
 
-    public Tag getParentTag() {
-        return parentTag;
+    public Category getParentCategory() {
+        return parentCategory;
     }
 
-    public void setParentTag(Tag parentTag) {
-        this.parentTag = parentTag;
+    public void setParentCategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
     }
 
-    public List<Tag> getChildTag() {
-        return childTags;
+    public List<Category> getChildTag() {
+        return childCategories;
     }
 
-    public void setChildTag(ArrayList<Tag> childTags) {
-        this.childTags = childTags;
+    public void setChildTag(ArrayList<Category> childCategories) {
+        this.childCategories = childCategories;
     }
 
-    public void addChildTag(Tag child) {
-        childTags.add(child);
+    public void addChildTag(Category child) {
+        childCategories.add(child);
     }
 
     public Language getLanguage() {

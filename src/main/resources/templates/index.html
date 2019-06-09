@@ -9,13 +9,20 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Dashboard</title>
+    <title>Diploma</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
 
     <!-- Custom fonts for this template-->
     <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-    <!-- Page level plugin CSS-->
-    <link href="/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin.css" rel="stylesheet">
@@ -26,10 +33,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 
-    <!-- Editable select -->
-    <script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="//rawgithub.com/indrimuska/jquery-editable-select/master/dist/jquery-editable-select.min.js"></script>
-    <link href="//rawgithub.com/indrimuska/jquery-editable-select/master/dist/jquery-editable-select.min.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.css"
+          rel="stylesheet">
+    <!-- Select2 Bootstrap -->
 
 </head>
 
@@ -95,12 +105,23 @@
         <!-- /.container-fluid -->
 
         <div class="container">
+            <div class="row py-2">
+                <div class="col-auto">
+                    <select class="custom-select" id="language">
+                        <option value="ENGLISH">English</option>
+                        <option value="UKRAINIAN">Українська</option>
+                        <option value="RUSSIAN">Русский</option>
+                    </select>
+                </div>
+            </div>
             <div class="row align-items-end">
                 <div class="col-4">
-                    <input id="article-name" class="form-control form-control-lg" type="text" placeholder="Article name">
+                    <input id="article-title" class="form-control form-control-lg" type="text"
+                           placeholder="Article title">
                 </div>
-                <div class="col-2">
-                    <input id="article-abbreviation" class="form-control form-control-md" type="text" placeholder="Abbreviation">
+                <div class="col-2 px-0">
+                    <input id="article-abbreviation" class="form-control form-control-md" type="text"
+                           placeholder="Abbreviation">
                 </div>
             </div>
             <div class="row py-4">
@@ -108,7 +129,7 @@
                     <textarea id="text"></textarea>
                 </div>
             </div>
-            <div class="row justify-content-start px-2" id="categoryArea">
+            <div class="row justify-content-start px-2" id="category-area">
                 <div class="col-auto">
                     <button type="button" class="btn btn-success btn-circle shadow btn-xl" data-toggle="modal"
                             data-target="#addCategoryWindow">
@@ -139,7 +160,7 @@
 </div>
 <!-- /#wrapper -->
 
-<div class="modal fade" id="addTagWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="addCategoryWindow" tabindex="-1" role="dialog" aria-labelledby="addCategoryWindow"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -149,28 +170,17 @@
                 </div>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="tag-name" class="col-form-label">Name:</label>
-                        <input type="text" class="form-control" id="tag-name">
+                <div class="form-group row justify-content-center align-items-center">
+                    <div class="col-auto">
+                        <select class="custom-select" id="category-name" name="state"></select>
                     </div>
-                </form>
-                <div class="form-group">
-                    <label for="tag-parent">Tag parent:</label>
-                    <input class="custom-select" list="tag-parent-names" id="tag-parent">
-                    <datalist id="tag-parent-names">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </datalist>
                 </div>
             </div>
-
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="addTag($('#tag-name').val(), $('#tag-parent').val())">Add</button>
+                <button type="button" class="btn btn-primary"
+                        onclick="addCategory($('#category-name :selected').text(), $('#category-name').val())">Add
+                </button>
             </div>
         </div>
     </div>
@@ -183,41 +193,44 @@
 </a>
 
 
-<!-- Bootstrap core JavaScript-->
-<script src="/vendor/jquery/jquery.min.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Page level plugin JavaScript-->
-<script src="/vendor/chart.js/Chart.min.js"></script>
-<script src="/vendor/datatables/jquery.dataTables.js"></script>
-<script src="/vendor/datatables/dataTables.bootstrap4.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="/js/sb-admin.min.js"></script>
-
 <script>
-    var markdownEditor = new SimpleMDE({
-        element: document.getElementById("text"),
-        toolbar: ["bold", "italic", "heading", "|",
-            "quote", "unordered-list", "ordered-list", "|",
-            "link", "image", "|",
-            "preview", "side-by-side", "|",
-            {
-                name: "guide",
-                action: function openLink(editor) {
-                    window.open('http://google.com')
-                },
-                className: "fa fa-question-circle",
-                title: "Guide",
-            }],
-        status: false,
-        placeholder: "Enter article text...",
-        spellChecker: false,
-    })
+    var markdownEditor;
+
+    $(document).ready(function () {
+        markdownEditor = new SimpleMDE({
+            element: document.getElementById("text"),
+            toolbar: ["bold", "italic", "heading", "|",
+                "quote", "unordered-list", "ordered-list", "|",
+                "link", "image", "|",
+                "preview", "side-by-side", "|",
+                {
+                    name: "guide",
+                    action: function openLink(editor) {
+                        window.open('http://google.com')
+                    },
+                    className: "fa fa-question-circle",
+                    title: "Guide",
+                }],
+            status: false,
+            placeholder: "Enter article text...",
+            spellChecker: false,
+        });
+
+        setTimeout(function () {
+            alert(markdownEditor.options.previewRender(markdownEditor.value()));
+        }, 10000)
+
+        $('#category-name').select2({
+            theme: "bootstrap",
+            dropdownParent: $('#addCategoryWindow'),
+            width: "250px"
+        });
+
+        updateCategoryList();
+    });
 </script>
+
+
 <script src="/js/category-function.js"></script>
 <script src="/js/upload-article.js"></script>
 </body>

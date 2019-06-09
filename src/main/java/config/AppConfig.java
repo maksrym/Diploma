@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ComponentScan({"controller", "converter", "enums"})
+@ComponentScan({"controller", "converter", "enums", "service"})
 @EntityScan("model")
 @EnableJpaRepositories("repository")
 public class AppConfig implements WebMvcConfigurer {

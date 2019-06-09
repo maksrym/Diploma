@@ -1,46 +1,47 @@
 
 function uploadArticle() {
-    var articleName = $("#article-name").val();
+    var articleTitle = $("#article-title").val();
     var articleAbbreviation = $("#article-abbreviation").val();
     var articleText = markdownEditor.value();
+    var articleLanguage = $("#language").val();
 
-    if(fieldsIsEmpty(articleName, articleAbbreviation) || textAreaIsEmpty(articleText)) {
+    if(titleIsEmpty(articleTitle) || textAreaIsEmpty(articleText)) {
         return;
     }
 
+    var categories = getCategories();
 
+    var article = new Object();
+    article.title = articleTitle;
+    article.abbreviation = articleAbbreviation;
+    article.text = articleText;
+    article.language = articleLanguage;
+    article.categories = categories;
+
+    alert(JSON.stringify(article));
+    $.ajax({
+        url: "/article/add",
+        method: "POST",
+        contentType: "application/json",
+        dataType : "json",
+        data: JSON.stringify(article)
+    })
 }
 
-function fieldsIsEmpty(name, abbreviation) {
-    var hasEmptyField = false;
-    if(!name) {
-        var nameField = $("#article-name");
+function titleIsEmpty(title) {
+    if(!title) {
+        var titleField = $("#article-title");
 
-        nameField.addClass("is-invalid");
-        nameField.keydown(function() {
+        titleField.addClass("is-invalid");
+        titleField.keydown(function() {
             if (this.value) {
-                nameField.removeClass("is-invalid");
-                nameField.off("keydown");
+                titleField.removeClass("is-invalid");
+                titleField.off("keydown");
             }
         });
-        hasEmptyField = true;
+        return true;
     }
-
-    if(!abbreviation) {
-        var abbreviationField = $("#article-abbreviation");
-
-        abbreviationField.addClass("is-invalid");
-        abbreviationField.keydown(function() {
-            if (this.value) {
-                abbreviationField.removeClass("is-invalid");
-                abbreviationField.off("keydown");
-            }
-        });
-
-        hasEmptyField = true;
-    }
-
-    return hasEmptyField;
+    return false;
 }
 
 function textAreaIsEmpty(text) {
@@ -52,5 +53,13 @@ function textAreaIsEmpty(text) {
 }
 
 function getCategories() {
+    var categories = [];
 
+    $("span.category-name").each(function () {
+        var category = new Object();
+        category.id = $(this).attr("data-id");
+        categories.push(category);
+    });
+
+    return categories
 }

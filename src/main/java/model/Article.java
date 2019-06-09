@@ -16,6 +16,7 @@ public class Article {
     private Long id;
 
     private String title;
+    private String abbreviation;
 
     @Column(columnDefinition = "TEXT")
     private String text;
@@ -39,10 +40,16 @@ public class Article {
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<Tag> tags;
+    private List<Category> categories;
 
     protected Article() {
-        this.tags = new ArrayList<>();
+        this.categories = new ArrayList<>();
+    }
+
+    public Article(String title, String text, Language language) {
+        this.title = title;
+        this.text = text;
+        this.language = language;
     }
 
     public String getTitle() {
@@ -51,6 +58,14 @@ public class Article {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 
     public String getText() {
@@ -93,11 +108,11 @@ public class Article {
         this.lastChange = lastChange;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

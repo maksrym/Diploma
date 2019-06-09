@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Tables")
+@Table(name = "Pages")
 public class Page {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class Page {
     @OneToMany(mappedBy = "page")
     private List<Article> articles;
 
-    protected Page() {
+    public Page() {
         this.articles = new ArrayList<>();
     }
 
@@ -26,5 +26,9 @@ public class Page {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    public void addArticle(Article article) {
+        articles.add(article);
     }
 }

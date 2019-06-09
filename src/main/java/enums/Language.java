@@ -11,6 +11,19 @@ public enum Language {
         this.title = title;
     }
 
+    public static Language getLanguageByTitle(String language) {
+        switch (language) {
+            case "Українська":
+                return Language.UKRAINIAN;
+            case "English":
+                return Language.ENGLISH;
+            case "Русский":
+                return Language.RUSSIAN;
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         return title;
