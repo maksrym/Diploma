@@ -36,3 +36,26 @@
     width: 100%;
     height: calc(1.5em + 0.75rem + 2px);
 }
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar {
+    background: #343a40;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+.side{
+    color: #FFFFFF !important;
+}
+.side:hover{
+    color: #000000 !important;
+}

@@ -23,7 +23,7 @@ public class ArticleController {
 
     @RequestMapping("/")
     public String onIndex() {
-        return "index";
+        return "addArticle";
     }
 
     @GetMapping("/article/{name}")
@@ -33,29 +33,29 @@ public class ArticleController {
 //        articleName = URLDecoder.decode(articleName, "UTF-8");
 //        Article article = service.getArticle(articleName);
 
-        String html = Processor.process("# Intro\n" +
-                "> Go ahead, play around with the editor! Be sure to check out **bold** and *italic* styling, or even [links](https://google.com). You can type the Markdown syntax, use the toolbar, or use shortcuts like `cmd-b` or `ctrl-b`.\n" +
-                "\n" +
-                "## Lists\n" +
-                "Unordered lists can be started using the toolbar or by typing `* `, `- `, or `+ `. Ordered lists can be started by typing `1. `.\n" +
-                "\n" +
-                "#### Unordered\n" +
-                "* Lists are a piece of cake\n" +
-                "* They even auto continue as you type\n" +
-                "* A double enter will end them\n" +
-                "* Tabs and shift-tabs work too\n" +
-                "\n" +
-                "#### Ordered\n" +
-                "1. Numbered lists...\n" +
-                "2. ...work too!\n" +
-                "\n" +
-                "## What about images?\n" +
-                "![Yes](https://i.imgur.com/sZlktY7.png)");
+        String html = Processor.process("Article title\n" +
+                "Abbreviation\n" +
+                "# HEAD\n" +
+                "**bold**\n" +
+                "*italic*\n" +
+                "> цитата\n" +
+                "* bullet list\n" +
+                "* bullet list 2\n" +
+                "\u200B\n" +
+                "1. number list\n" +
+                "2. number list2\n" +
+                "[link](http://google.com)\n" +
+                "![some img](https://images.unsplash.com/photo-1483691278019-cb7253bee49f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80)");
         System.out.println(html);
         return "articlePage";
     }
 
-    @RequestMapping("/article/add")
+    @GetMapping("/article/add")
+    public String addArticlePage() {
+        return "addArticle";
+    }
+
+    @PostMapping("/article/add")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ResponseBody
     public void addArticle(@RequestBody NewArticleDTO articleDTO) {
@@ -66,6 +66,11 @@ public class ArticleController {
     @ResponseBody
     public List<CategoryDTO> getCategoriesList(@RequestParam String language) {
         return service.getCategoryDTOByLanguage(language);
+    }
+
+    @GetMapping("/category/add")
+    public String addCategoryPage() {
+        return "addCategory";
     }
 
     @PostMapping("/category/add")
