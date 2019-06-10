@@ -59,6 +59,8 @@ public class ServiceImpl implements Service {
                 .addAttribute("pageId", article.getPage().getId())
                 .addAttribute("otherArticles", getOtherArticles(article.getPage()))
                 .addAttribute("pageIsFull", pageIsFull(article));
+
+        Hibernate.initialize(article.getCategories());
     }
 
     private boolean pageIsFull(Article article) {

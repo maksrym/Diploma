@@ -1,8 +1,8 @@
 package enums;
 
 public enum Language {
-    UKRAINIAN("Українська"),
     ENGLISH("English"),
+    UKRAINIAN("Українська"),
     RUSSIAN("Русский");
 
     private String title;
@@ -13,10 +13,10 @@ public enum Language {
 
     public static Language getLanguageByTitle(String language) {
         switch (language) {
-            case "Українська":
-                return Language.UKRAINIAN;
             case "English":
                 return Language.ENGLISH;
+            case "Українська":
+                return Language.UKRAINIAN;
             case "Русский":
                 return Language.RUSSIAN;
         }
