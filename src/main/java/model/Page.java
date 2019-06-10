@@ -13,11 +13,15 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "page")
+    @OneToMany( mappedBy = "page")
     private List<Article> articles;
 
     public Page() {
         this.articles = new ArrayList<>();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public List<Article> getArticles() {

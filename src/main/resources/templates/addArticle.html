@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -25,7 +25,8 @@
             crossorigin="anonymous"></script>
 
     <!-- Custom fonts for this template-->
-    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"
+          type='text/css'>
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin.css" rel="stylesheet">
@@ -46,9 +47,10 @@
 
     <script src="/js/category-function.js"></script>
     <script src="/js/upload-article.js"></script>
+    <script src="/js/technical-function.js"></script>
     <script type="text/javascript">
+        var markdownEditor;
         $(document).ready(function () {
-            var markdownEditor;
 
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
@@ -74,7 +76,6 @@
             });
 
             setTimeout(function () {
-                console.log("LOL");
                 alert(markdownEditor.options.previewRender(markdownEditor.value()));
             }, 1000);
 
@@ -93,11 +94,7 @@
 
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="/">Start Bootstrap</a>
-
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarCollapse">
-        <i class="fa fa-language fa-2x"></i>
-    </button>
+    <a class="navbar-brand mr-1" href="/">Aviation directory</a>
 
     <!-- Navbar Search -->
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
@@ -106,7 +103,7 @@
                    aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button">
-                    <i class="fas fa-search"></i>
+                    <i class="fa fa-search"></i>
                 </button>
             </div>
         </div>
@@ -114,72 +111,30 @@
 
     <!-- Navbar -->
     <div class="dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+        <a class="text-white" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
-            <i class="fa fa-bars"></i>
+            <i class="fa fa-bars text-white"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" href="/article/add">
                 <i class="fa fa-pencil" aria-hidden="true"></i>
                 Add article</a>
             <a class="dropdown-item" href="/category/add">
-                <i class="fa fa-pencil" aria-hidden="true"></i>
+                <i class="fa fa-book" aria-hidden="true"></i>
                 Add category</a>
         </div>
     </div>
-    <ul class="navbar-nav ml-auto ml-md-0">
-        <li class="nav-item dropdown no-arrow mx-1">
-
-        </li>
-    </ul>
-
 </nav>
 
 <div id="wrapper">
-
-    <!-- Sidebar -->
-    <nav id="sidebar" class="">
-        <div class="sidebar-header">
-            <h3 class="px-1">Languages:</h3>
-        </div>
-        <ul class="list-unstyled components">
-            <li class="active">
-                <ul class="list-unstyled" id="homeSubmenu" >
-                    <li>
-                        <a class="dropdown-item side" href="#">English</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item side" href="#">Українська</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item side" href="#">Русский</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
     <div id="content-wrapper">
-
-        <div class="container-fluid">
-
-            <!-- Breadcrumbs-->
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="#">Dashboard</a>
-                </li>
-                <li class="breadcrumb-item active">Overview</li>
-            </ol>
-        </div>
-        <!-- /.container-fluid -->
-
         <div class="container">
             <div class="row py-2">
                 <div class="col-auto">
                     <select class="custom-select" id="language">
-                        <option value="ENGLISH">English</option>
-                        <option value="UKRAINIAN">Українська</option>
-                        <option value="RUSSIAN">Русский</option>
+                        <div th:each="language : ${requiredLanguages}" th:remove="tag">
+                            <option th:value="${language.name()}" th:text="${language.getTitle()}"></option>
+                        </div>
                     </select>
                 </div>
             </div>

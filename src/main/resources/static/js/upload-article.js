@@ -17,6 +17,7 @@ function uploadArticle() {
     article.text = articleText;
     article.language = articleLanguage;
     article.categories = categories;
+    article.pageId = getUrlParameter("page");
 
     alert(JSON.stringify(article));
     $.ajax({

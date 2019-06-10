@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -22,7 +22,7 @@
             crossorigin="anonymous"></script>
 
     <!-- Custom fonts for this template-->
-    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"  type='text/css'>
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin.css" rel="stylesheet">
@@ -41,7 +41,7 @@
           rel="stylesheet">
     <!-- Select2 Bootstrap -->
 
-    <link href="css/loading.css" rel="stylesheet" type="text/css">
+    <script src="js/technical-function.js"></script>
 
 </head>
 
@@ -49,11 +49,7 @@
 
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="/">Start Bootstrap</a>
-
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
-        <i class="fas fa-bars"></i>
-    </button>
+    <a class="navbar-brand mr-1" href="/">Aviation directory</a>
 
     <!-- Navbar Search -->
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
@@ -62,52 +58,129 @@
                    aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button">
-                    <i class="fas fa-search"></i>
+                    <i class="fa fa-search"></i>
                 </button>
             </div>
         </div>
     </form>
 
     <!-- Navbar -->
-    <ul class="navbar-nav ml-auto ml-md-0">
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-            </a>
-        </li>
-    </ul>
-
+    <div class="dropdown">
+        <a class="text-white" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
+            <i class="fa fa-bars text-white"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="/article/add">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+                Add article</a>
+            <a class="dropdown-item" href="/category/add">
+                <i class="fa fa-book" aria-hidden="true"></i>
+                Add category</a>
+        </div>
+    </div>
 </nav>
 
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="sidebar navbar-nav">
-        <li class="nav-item active">
-            <a class="nav-link" href="index">
-                <i class="far fa-sticky-note"></i>
-                <span>Index</span>
-            </a>
-        </li>
-    </ul>
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="px-1">Languages:</h3>
+        </div>
+        <ul class="list-unstyled components">
+            <li class="active">
+                <ul class="list-unstyled" id="homeSubmenu">
+                    <div th:if="${otherArticles.get('ENGLISH')}">
+                        <a class="dropdown-item side" th:classappend="${language.name() == 'ENGLISH'}  ? 'disabled' : _"
+                           th:href="${otherArticles.get('ENGLISH')}">English</a>
+                    </div>
+                    <div th:if="${otherArticles.get('UKRAINIAN')}">
+                        <a class="dropdown-item side"
+                           th:classappend="${language.name() == 'UKRAINIAN'}  ? 'disabled' : _"
+                           th:href="${otherArticles.get('UKRAINIAN')}">Українська</a>
+                    </div>
+                    <div th:if="${otherArticles.get('RUSSIAN')}">
+                        <a class="dropdown-item side" th:classappend="${language.name() == 'RUSSIAN'}  ? 'disabled' : _"
+                           th:href="${otherArticles.get('RUSSIAN')}">Русский</a>
+                    </div>
+                    <li>
+                        <a class="dropdown-header text-white" th:if="!${pageIsFull}" th:href="'/article/add?page=' + ${pageId}">add article in
+                            other
+                            language...</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
 
     <div id="content-wrapper">
         <div class="container" id="article-container">
+            <div id="head">
+                <h1><span th:text="${title}">Tittle</span>
+                    <span class="badge badge-secondary" th:text="${abbreviation}">abbreviation</span>
+                </h1>
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-link text-dark py-0" id="sidebarCollapse">
+                            <i class="fa fa-language fa-2x"></i>
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row px-4">
+                    <div class='col-auto px-1 py-1 category' th:each="category : ${categories}">
+                        <div class='bg-dark p-2'>
+                            <a class='category-name text-white' th:href="'/category/' + ${category.name}" th:text="${category.name}"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="text-box" th:utext="${text}">
+                <h1>HEAD</h1>
+                <p><strong>bold</strong><br><em>italic</em></p>
+                <blockquote>
+                    <p>This is a quote.<br>It can span multiple lines!</p>
+                </blockquote>
+                <ul>
+                    <li>generic list</li>
+                    <li>generic list2</li>
+                </ul>
+                <ol>
+                    <li>Numbered list</li>
+                    <li>Numbered list 2</li>
+                </ol>
+                <p><a href="http://google.com">link</a></p>
+                <p>
+                    <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Aeroflot_Tu-154B-2_CCCP-85396_ZRH_1982-6-20.png/270px-Aeroflot_Tu-154B-2_CCCP-85396_ZRH_1982-6-20.png"
+                         alt="img"></p>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Column 1</th>
+                        <th>Column 2</th>
+                        <th>Column 3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>Male</td>
+                    </tr>
+                    <tr>
+                        <td>Mary</td>
+                        <td>Smith</td>
+                        <td>Female</td>
+                    </tr>
+                    </tbody>
+                </table>
 
+            </div>
         </div>
     </div>
     <!-- Markdown editor -->
-
-    <!-- Sticky Footer -->
-    <footer class="sticky-footer">
-        <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-                <span>Copyright © Your Website 2019</span>
-            </div>
-        </div>
-    </footer>
-
 </div>
 <!-- /.content-wrapper -->
 
@@ -121,106 +194,9 @@
 </a>
 
 <script>
-    $("#language").change(function () {
-        $("#second-point").show();
-
-        $(this).change(fillCategoryList());
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass("active");
     });
-
-    $("#category-name").keydown(function () {
-        $("#third-point").show();
-        $(this).off("change");
-
-    });
-
-    function fillCategoryList() {
-        $('#root-category').select2({
-            theme: "bootstrap"
-        });
-
-        var languageSelect = $("#language");
-        var language = languageSelect.val();
-
-        var oldHTML = loading();
-        $.get(
-            "/category/getList",
-            {
-                language: language
-            }
-        ).done(function (data) {
-            fillSelectList(oldHTML, data);
-            stopLoading(oldHTML);
-        });
-
-        function loading() {
-            $("#root-category").select2('destroy');
-
-            var oldHTML = $("#root-category-row").replaceWith('<div class="d-flex justify-content-center" id="loading">' +
-                '<div class="spinner-grow" role="status">' +
-                '<span class="sr-only">Loading...</span>' +
-                '</div></div>');
-
-            languageSelect.prop("disabled", true);
-            $("#add-category").prop("disabled", true);
-
-            return oldHTML;
-        };
-        function stopLoading(newSelectList) {
-            $("#loading").replaceWith(newSelectList);
-            $("#root-category").select2({
-                theme: "bootstrap",
-                placeholder: "root category...",
-                width: '250px'
-            });
-
-            languageSelect.prop("disabled", false);
-            $("#add-category").prop("disabled", false);
-        }
-
-        function fillSelectList(selectList, data) {
-            var select = $(selectList).find("#root-category");
-            $(select).html("<option hidden disabled selected value></option>");
-
-            data.forEach(function (category) {
-                var option = $("<option/>");
-                option.val(category.id).text(category.name);
-
-                select.append(option);
-            })
-
-        };
-    }
-
-    function uploadCategory() {
-        var category = new Object();
-        category.language = $("#language").val();
-        category.name = $("#category-name").val().trim();
-        category.rootCategory = new Object();
-        category.rootCategory.id = $("#root-category").val();
-
-        if (!category.name) {
-            var nameField = $("#category-name");
-
-            nameField.addClass("is-invalid");
-            nameField.keydown(function () {
-                if (this.value) {
-                    nameField.removeClass("is-invalid");
-                    nameField.off("keydown");
-                }
-            });
-            return;
-        }
-
-        $.ajax({
-            url: "/category/add",
-            method: "POST",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(category)
-        }).done(function () {
-            alert("Done!");
-        });
-    }
 </script>
 </body>
 

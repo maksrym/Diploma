@@ -3,7 +3,9 @@ package controller;
 import com.github.rjeschke.txtmark.Processor;
 import dto.CategoryDTO;
 import dto.NewArticleDTO;
+import enums.Language;
 import model.Article;
+import model.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -23,35 +25,29 @@ public class ArticleController {
 
     @RequestMapping("/")
     public String onIndex() {
-        return "addArticle";
+        return "forward:addArticle";
+    }
+
+    @GetMapping("/{name}")
+    public String onTest(@PathVariable("name") String name){
+        return name;
     }
 
     @GetMapping("/article/{name}")
-    public String onTest(//@PathVariable("name") String articleName,
-                         //HttpServletResponse response,
+    public String getArticle(@PathVariable("name") String articleName,
+                         HttpServletResponse response,
                          Model model) throws UnsupportedEncodingException {
-//        articleName = URLDecoder.decode(articleName, "UTF-8");
-//        Article article = service.getArticle(articleName);
-
-        String html = Processor.process("Article title\n" +
-                "Abbreviation\n" +
-                "# HEAD\n" +
-                "**bold**\n" +
-                "*italic*\n" +
-                "> цитата\n" +
-                "* bullet list\n" +
-                "* bullet list 2\n" +
-                "\u200B\n" +
-                "1. number list\n" +
-                "2. number list2\n" +
-                "[link](http://google.com)\n" +
-                "![some img](https://images.unsplash.com/photo-1483691278019-cb7253bee49f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80)");
-        System.out.println(html);
+        articleName = URLDecoder.decode(articleName, "UTF-8");
+        service.fillArticleModel(articleName, model);
         return "articlePage";
     }
 
     @GetMapping("/article/add")
-    public String addArticlePage() {
+    public String addArticlePage(@RequestParam(name = "page", required = false)Long id,
+                                 Model model) {
+        List<Language> requiredLanguages = service.getPageRequiredLanguages(id);
+        model.addAttribute("requiredLanguages", requiredLanguages);
+
         return "addArticle";
     }
 

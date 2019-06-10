@@ -53,9 +53,32 @@
     transition: all 0.3s;
 }
 
+@media (max-width: 800px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0px;
+    }
+}
+
 .side{
-    color: #FFFFFF !important;
+    color: #FFFFFF ;
 }
 .side:hover{
-    color: #000000 !important;
+    color: #000000 ;
+}
+
+.side:active{
+    background-color: #28a745;
+}
+
+p > img {
+    display: block;
+    margin: 0 auto;
+}
+
+.fa-bars:hover {
+    cursor: pointer;
+    color: #c7c7c7 !important;
 }
