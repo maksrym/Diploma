@@ -52,6 +52,11 @@
         var markdownEditor;
         $(document).ready(function () {
 
+            $("#language").change(function () {
+                clearCategoryArea();
+                updateCategoryList();
+            });
+
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });

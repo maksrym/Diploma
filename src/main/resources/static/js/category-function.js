@@ -25,11 +25,6 @@ function addCategory(name, id) {
     $("#addCategoryWindow").modal("toggle");
 }
 
-$("#language").change(function () {
-    clearCategoryArea();
-    updateCategoryList();
-});
-
 function clearCategoryArea() {
     $(".category").remove();
 };
