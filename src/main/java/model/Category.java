@@ -58,7 +58,7 @@ public class Category {
         this.parentCategory = parentCategory;
     }
 
-    public List<Category> getChildTag() {
+    public List<Category> getSubcategory() {
         return childCategories;
     }
 
@@ -76,5 +76,9 @@ public class Category {
 
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
     }
 }

@@ -49,40 +49,6 @@
     <script src="/js/upload-article.js"></script>
     <script src="/js/technical-function.js"></script>
     <script type="text/javascript">
-        var markdownEditor;
-        $(document).ready(function () {
-
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-
-            markdownEditor = new SimpleMDE({
-                element: document.getElementById("text"),
-                toolbar: ["bold", "italic", "heading", "|",
-                    "quote", "unordered-list", "ordered-list", "|",
-                    "link", "image", "|",
-                    "preview", "side-by-side", "|",
-                    {
-                        name: "guide",
-                        action: function openLink(editor) {
-                            window.open('http://google.com')
-                        },
-                        className: "fa fa-question-circle",
-                        title: "Guide",
-                    }],
-                status: false,
-                placeholder: "Enter article text...",
-                spellChecker: false,
-            });
-
-            $('#category-name').select2({
-                theme: "bootstrap",
-                dropdownParent: $('#addCategoryWindow'),
-                width: "250px"
-            });
-
-            updateCategoryList();
-        });
     </script>
 </head>
 
@@ -123,47 +89,92 @@
 </nav>
 
 <div id="wrapper">
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="px-1">Languages:</h3>
+        </div>
+        <ul class="list-unstyled components">
+            <li class="active">
+                <ul class="list-unstyled" id="homeSubmenu">
+                    <a class="dropdown-item side" href="/category?language=ENGLISH"
+                       th:classappend="${language.name() == 'ENGLISH'} ? 'disabled' : _">English</a>
+                    <a class="dropdown-item side" href="/category?language=UKRAINIAN"
+                       th:classappend="${language.name() == 'UKRAINIAN'} ? 'disabled' : _">Українська</a>
+                    <a class="dropdown-item side" href="/category?language=RUSSIAN"
+                       th:classappend="${language.name() == 'RUSSIAN'} ? 'disabled' : _">Русский</a>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
     <div id="content-wrapper">
-        <div class="container">
-            <div class="row py-2">
-                <div class="col-auto">
-                    <select class="custom-select" id="language">
-                        <div th:each="language : ${requiredLanguages}" th:remove="tag">
-                            <option th:value="${language.name()}" th:text="${language.getTitle()}"></option>
+        <div class="row px-2 my-auto align-items-baseline">
+            <div class="col pl-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" th:text="${categories} ? _ : 'Root'">
+                            <a th:href="@{/category(language=${language.name()})}">Root</a></li>
+                        <div th:each="category, iteration : ${categories}" th:remove="tag">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/category/{category}(category=${category.name})}"
+                                   th:text="${category.name}"
+                                   th:if="!${iteration.last}">Category</a>
+                                <span th:href="@{/category/{category}(category=${category.name})}"
+                                      th:text="${category.name}"
+                                      th:if="${iteration.last}">Category</span>
+                            </li>
                         </div>
-                    </select>
-                </div>
+                    </ol>
+                </nav>
             </div>
-            <div class="row align-items-end">
-                <div class="col-4">
-                    <input id="article-title" class="form-control form-control-lg" type="text"
-                           placeholder="Article title">
-                </div>
-                <div class="col-2 px-0">
-                    <input id="article-abbreviation" class="form-control form-control-md" type="text"
-                           placeholder="Abbreviation">
-                </div>
+        </div>
+
+        <div class="row px-5 pb-0">
+            <div class="col-auto pl-0 pr-0">
+                <button class="btn btn-link text-dark py-0" id="sidebarCollapse">
+                    <i class="fa fa-language fa-2x"></i>
+                </button>
             </div>
-            <div class="row py-4">
-                <div class="col">
-                    <textarea id="text"></textarea>
-                </div>
+            <div class="col-auto pl-0">
+                <h3>Subcategories</h3>
             </div>
-            <div class="row justify-content-start px-2" id="category-area">
-                <div class="col-auto">
-                    <button type="button" class="btn btn-success btn-circle shadow btn-xl" data-toggle="modal"
-                            data-target="#addCategoryWindow">
-                        <i class="fa fa-plus"></i>
-                    </button>
-                </div>
+        </div>
+        <div class="row px-5 pt-0">
+            <div class="col">
+                <hr>
             </div>
-            <div class="row text-center py-1">
-                <div class="col">
-                    <button class="btn btn-primary shadow" id="check" onclick="uploadArticle()">Check</button>
+        </div>
+        <div class="row px-5">
+            <div class="col-3" th:each="subcategory : ${subcategories}">
+                <h5>
+                    <a class="link" th:href="@{/category/{subcategory}(subcategory=${subcategory.name})}">
+                        <span th:text="${subcategory.name}">ssss</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </h5>
+            </div>
+        </div>
+        <div class="row px-5">
+            <div class="col">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row px-5">
+            <div class="col-sm-12 col-md-3 py-2" th:each="article : ${articles}">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" id="title">
+                            <span th:text="${article.title}"></span>
+                            <span class="badge badge-secondary" id="abbreviation" th:text="${article.abbreviation}">Abbreviation</span>
+                        </h5>
+                        <a class="card-link" th:href="@{/article/{article}(article = ${article.title})}">Read...</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Markdown editor -->
 
     </div>
     <!-- /.content-wrapper -->
@@ -171,31 +182,10 @@
 </div>
 <!-- /#wrapper -->
 
-<div class="modal fade" id="addCategoryWindow" tabindex="-1" role="dialog" aria-labelledby="addCategoryWindow"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="container">
-                    <h5 class="text-center">Add tag</h5>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="form-group row justify-content-center align-items-center">
-                    <div class="col-auto">
-                        <select class="custom-select" id="category-name" name="state"></select>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary"
-                        onclick="addCategory($('#category-name :selected').text(), $('#category-name').val())">Add
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal window -->
+<script>
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass("active");
+    });
+</script>
 </body>
 </html>

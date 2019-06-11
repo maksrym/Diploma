@@ -1,11 +1,10 @@
 package controller;
 
-import com.github.rjeschke.txtmark.Processor;
 import dto.CategoryDTO;
 import dto.NewArticleDTO;
 import enums.Language;
 import model.Article;
-import model.Page;
+import model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -16,6 +15,7 @@ import service.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Controller
@@ -25,12 +25,7 @@ public class ArticleController {
 
     @RequestMapping("/")
     public String onIndex() {
-        return "forward:addArticle";
-    }
-
-    @GetMapping("/{name}")
-    public String onTest(@PathVariable("name") String name){
-        return name;
+        return "forward:/category";
     }
 
     @GetMapping("/article/{name}")
@@ -56,6 +51,29 @@ public class ArticleController {
     @ResponseBody
     public void addArticle(@RequestBody NewArticleDTO articleDTO) {
         service.addArticle(articleDTO);
+    }
+
+    @RequestMapping(value = {"/category", "/category/{name}"})
+    public String getCategory(@PathVariable(required = false) String name,
+                              @RequestParam(defaultValue = "ENGLISH", required = false)Language language,
+                              Model model) throws UnsupportedEncodingException {
+        if (name == null) {
+            List<Article> articlesWithoutCategory = service.getArticlesWithoutCategory(language);
+            model.addAttribute("articles", articlesWithoutCategory)
+                    .addAttribute("subcategories", service.getAllRootCategories(language))
+                    .addAttribute("language", language);
+            return "categoriesPage";
+        }
+
+        name = URLEncoder.encode(name, "UTF-8");
+        List<Category> categories = service.getCategoryTree(name);
+        Category selectedCategory = categories.get(categories.size() - 1);
+        List<Article> articles = selectedCategory.getArticles();
+        model.addAttribute("categories", categories)
+                .addAttribute("articles", articles)
+                .addAttribute("subcategories", selectedCategory.getSubcategory())
+                .addAttribute("language", selectedCategory.getLanguage());
+        return "categoriesPage";
     }
 
     @RequestMapping("/category/getList")

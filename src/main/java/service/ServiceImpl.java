@@ -180,4 +180,33 @@ public class ServiceImpl implements Service {
 
         categoryRepository.save(newCategory);
     }
+
+    @Override
+    public List<Category> getAllRootCategories(Language language) {
+        return categoryRepository.findAllByParentCategoryAndLanguage(null, language);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Article> getArticlesWithoutCategory(Language language) {
+        return articleRepository.findAllByCategoriesAndLanguage(null, language);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> getCategoryTree(String categoryName) {
+        Category category = categoryRepository.findByName(categoryName);
+        Hibernate.initialize(category.getArticles());
+        Hibernate.initialize(category.getSubcategory());
+
+        ArrayList<Category> categories = new ArrayList<>();
+        categories.add(category);
+
+        Category categoryParent = category.getParentCategory();
+        while (categoryParent != null) {
+            categories.add(0, categoryParent);
+            categoryParent = categoryParent.getParentCategory();
+        }
+        return categories;
+    }
 }
