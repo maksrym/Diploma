@@ -63,7 +63,7 @@ public class Application {
 
                 service.addArticle(addSes());
                 service.addArticle(addPvs());
-                Article ses = service.getArticle("Система электроснабжения");
+                Article ses = service.getArticle("Системы электроснабжения");
                 Article sesUkr = addSesUkr();
                 sesUkr.setPage(ses.getPage());
                 service.addArticle(sesUkr);
