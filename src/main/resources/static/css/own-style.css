@@ -78,11 +78,26 @@ p > img {
     margin: 0 auto;
 }
 
-.fa-bars:hover {
+h6 {
+    text-align: center;
+}
+
+.fa-bars:hover,
+.fa-language.language:hover,
+.fa-pencil.edit:hover,
+.fa-trash.delete:hover {
     cursor: pointer;
     color: #c7c7c7 !important;
 }
 
+
 img {
-    width: 100%;
+    max-width: 90%;
+}
+
+blockquote {
+    padding: 0 1rem;
+    margin-left: 0;
+    color: #819198;
+    border-left: .3rem solid #dce6f0;
 }

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -32,6 +33,7 @@ public class ArticleController {
     public String getArticle(@PathVariable("name") String articleName,
                          HttpServletResponse response,
                          Model model) throws UnsupportedEncodingException {
+        model.addAttribute("articleUrl", articleName);
         articleName = URLDecoder.decode(articleName, "UTF-8");
         service.fillArticleModel(articleName, model);
         return "articlePage";
@@ -65,10 +67,11 @@ public class ArticleController {
             return "categoriesPage";
         }
 
-        name = URLEncoder.encode(name, "UTF-8");
+        name = URLDecoder.decode(name, "UTF-8");
         List<Category> categories = service.getCategoryTree(name);
         Category selectedCategory = categories.get(categories.size() - 1);
         List<Article> articles = selectedCategory.getArticles();
+        articles.sort(Comparator.comparing(Article::getTitle));
         model.addAttribute("categories", categories)
                 .addAttribute("articles", articles)
                 .addAttribute("subcategories", selectedCategory.getSubcategory())
@@ -92,5 +95,40 @@ public class ArticleController {
     @ResponseBody
     public void addCategory(@RequestBody CategoryDTO categoryDTO) {
         service.addCategory(categoryDTO);
+    }
+
+    @GetMapping("/search")
+    public String onSearch(@RequestParam String request, Model model) throws UnsupportedEncodingException {
+        request = URLDecoder.decode(request, "UTF-8");
+        List<Category> categories = service.findCategories(request);
+        List<Article> articles = service.findArticles(request);
+
+        model.addAttribute("categories", categories)
+                .addAttribute("articles", articles);
+
+        return "searchPage";
+    }
+
+    @GetMapping("/article/edit/{articleTitle}")
+    public String onEdit(@PathVariable String articleTitle, Model model) throws UnsupportedEncodingException {
+        articleTitle = URLDecoder.decode(articleTitle, "UTF-8" );
+        Article article = service.getArticle(articleTitle);
+        model.addAttribute("article", article);
+        return "editArticle";
+    }
+
+    @PostMapping("/article/edit/{articleTitle}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseBody
+    public void editArticle(@PathVariable String articleTitle, @RequestBody NewArticleDTO articleDTO) throws UnsupportedEncodingException {
+        articleTitle = URLDecoder.decode(articleTitle, "UTF-8");
+        service.amendArticle(articleTitle, articleDTO);
+    }
+
+    @RequestMapping("/article/delete/{articleTitle}")
+    public String onDelete(@PathVariable String articleTitle) throws UnsupportedEncodingException {
+        articleTitle = URLDecoder.decode(articleTitle, "UTF-8");
+        service.deleteArticle(articleTitle);
+        return "redirect:/";
     }
 }

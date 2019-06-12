@@ -46,7 +46,7 @@
     <!-- Select2 Bootstrap -->
 
     <script src="/js/category-function.js"></script>
-    <script src="/js/upload-article.js"></script>
+    <script src="/js/update-article.js"></script>
     <script src="/js/technical-function.js"></script>
     <script type="text/javascript">
         var markdownEditor;
@@ -96,6 +96,8 @@
                 placeholder: "Enter article text...",
                 spellChecker: false,
             });
+
+            markdownEditor.value($("#text").val());
 
             $('#category-name').select2({
                 theme: "bootstrap",
@@ -157,29 +159,39 @@
         <div class="container">
             <div class="row py-2">
                 <div class="col-auto">
-                    <select class="custom-select" id="language">
-                        <div th:each="language : ${requiredLanguages}" th:remove="tag">
-                            <option th:value="${language.name()}" th:text="${language.getTitle()}"></option>
-                        </div>
+                    <select class="custom-select" id="language" disabled>
+                        <option selected th:value="${article.language.name()}" th:text="${article.language.getTitle()}"></option>
                     </select>
+
                 </div>
             </div>
             <div class="row align-items-end">
                 <div class="col-4">
-                    <input id="article-title" class="form-control form-control-lg" type="text"
-                           placeholder="Article title">
+                    <input id="article-title" class="form-control form-control-lg" type="text" readonly
+                           th:value="${article.title}">
                 </div>
                 <div class="col-2 px-0">
-                    <input id="article-abbreviation" class="form-control form-control-md" type="text"
-                           placeholder="Abbreviation">
+                    <input id="article-abbreviation" class="form-control form-control-md" type="text" readonly
+                           th:placeholder="${article.abbreviation}">
                 </div>
             </div>
             <div class="row py-4">
                 <div class="col">
-                    <textarea id="text"></textarea>
+                    <textarea id="text" th:text="${article.text}"></textarea>
                 </div>
             </div>
             <div class="row justify-content-start px-2" id="category-area">
+                <div th:if="${!article.categories.isEmpty()}" th:each="category : ${article.categories}" th:remove="tag">
+                    <div class='col-auto px-1 py-1 category'>
+                        <div class='bg-dark p-2 text-white'>
+                            <span class='category-name' data-id=" + id + " th:attr="data-id=${category.id}" th:text="${category.name}">name</span>
+                            <button type='button' class='close' aria-label='Close'
+                                    onclick='$(this).parent().parent().remove()'>
+                                <span aria-hidden='true'>&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-success btn-circle shadow btn-xl" data-toggle="modal"
                             data-target="#addCategoryWindow">
@@ -189,7 +201,7 @@
             </div>
             <div class="row text-center py-1">
                 <div class="col">
-                    <button class="btn btn-primary shadow" id="check" onclick="uploadArticle(this)">Upload</button>
+                    <button class="btn btn-primary shadow" id="check" onclick="updateArticle(this)">Update</button>
                 </div>
             </div>
         </div>

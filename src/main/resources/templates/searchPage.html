@@ -13,7 +13,10 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
             crossorigin="anonymous"></script>
@@ -42,16 +45,17 @@
           rel="stylesheet">
     <!-- Select2 Bootstrap -->
 
+    <script src="/js/category-function.js"></script>
+    <script src="/js/upload-article.js"></script>
     <script src="/js/technical-function.js"></script>
-    <script>
+    <script type="text/javascript">
         function searchRequest() {
             var searchRequest = $("#search-request").val();
-            searchRequest = encodeURI(searchRequest);
-            window.location.href = "/search?request=" + searchRequest;
+            searchRequest = encodeURI("/search?request=" + searchRequest);
+            window.location.href =  searchRequest;
             return false;
         }
     </script>
-
 </head>
 
 <body id="page-top">
@@ -93,94 +97,70 @@
 
 <div id="wrapper">
 
-    <!-- Sidebar -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3 class="px-1">Languages:</h3>
-        </div>
-        <ul class="list-unstyled components">
-            <li class="active">
-                <ul class="list-unstyled" id="homeSubmenu">
-                    <div th:if="${otherArticles.get('ENGLISH')}">
-                        <a class="dropdown-item side" th:classappend="${language.name() == 'ENGLISH'}  ? 'disabled' : _"
-                           th:href="${otherArticles.get('ENGLISH')}">English</a>
-                    </div>
-                    <div th:if="${otherArticles.get('UKRAINIAN')}">
-                        <a class="dropdown-item side"
-                           th:classappend="${language.name() == 'UKRAINIAN'}  ? 'disabled' : _"
-                           th:href="${otherArticles.get('UKRAINIAN')}">Українська</a>
-                    </div>
-                    <div th:if="${otherArticles.get('RUSSIAN')}">
-                        <a class="dropdown-item side" th:classappend="${language.name() == 'RUSSIAN'}  ? 'disabled' : _"
-                           th:href="${otherArticles.get('RUSSIAN')}">Русский</a>
-                    </div>
-                    <li>
-                        <a class="dropdown-header text-white" th:if="!${pageIsFull}"
-                           th:href="'/article/add?page=' + ${pageId}">add article in
-                            other
-                            language...</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
     <div id="content-wrapper">
-        <div class="container" id="article-container">
-            <div id="head">
-                <div class="row">
-                    <div class="col-12">
-                        <h1 class="card-title"><span th:text="${title}">Tittle</span>
-                            <span class="badge badge-secondary" th:text="${abbreviation}">abbreviation</span>
-                        </h1>
-                    </div>
+        <div id="categories" th:if="!${categories.isEmpty()}">
+            <div class="row px-5 pb-0">
+                <div class="col-auto pl-0">
+                    <h3>Categories</h3>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-auto">
-                        <button class="btn btn-link text-dark py-0" id="sidebarCollapse">
-                            <i class="fa fa-language fa-2x language"></i>
-                        </button>
-                    </div>
-                    <div class="col-auto pl-0">
-                        <a th:href="@{/article/edit/{articleTitle}(articleTitle=${articleUrl})}" id="edit">
-                            <i class="fa fa-pencil fa-2x edit" style="color: black"></i>
-                        </a>
-                    </div>
-                    <div class="col-auto pl-1">
-                        <a th:href="@{/article/delete/{articleTitle}(articleTitle=${articleUrl})}" id="remove">
-                            <i class="fa fa-trash fa-2x delete" style="color: black"></i>
-                        </a>
-                    </div>
+            </div>
+            <div class="row px-5 pt-0">
+                <div class="col">
+                    <hr>
                 </div>
-                <hr>
-                <div class="row px-4">
-                    <div class='col-auto px-1 py-1 category' th:each="category : ${categories}">
-                        <div class='bg-dark p-2'>
-                            <a class='category-name text-white' th:href="'/category/' + ${category.name}"
-                               th:text="${category.name}"></a>
+            </div>
+            <div class="row px-5">
+                <div class="col-3" th:each="category : ${categories}">
+                    <h5>
+                        <a class="link" th:href="@{/category/{category}(category=${category.name})}">
+                            <span th:text="${category.name}">category</span>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <div id="articles" th:if="!${articles.isEmpty()}">
+            <div class="row px-5 pb-0">
+                <div class="col-auto pl-0">
+                    <h3>Articles</h3>
+                </div>
+            </div>
+            <div class="row px-5 pt-0">
+                <div class="col">
+                    <hr>
+                </div>
+            </div>
+            <div class="row px-5">
+                <div class="col-sm-12 col-md-3 py-2" th:each="article : ${articles}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title" id="title">
+                                <span th:text="${article.title}"></span>
+                                <span class="badge badge-secondary" id="abbreviation" th:text="${article.abbreviation}">Abbreviation</span>
+                            </h5>
+                            <a class="card-link" th:href="@{/article/{article}(article = ${article.title})}">Read...</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="container pt-2">
-                <div id="text-box" th:utext="${text}">
+        </div>
+
+        <div th:if="${categories.isEmpty()} and ${articles.isEmpty()}">
+            <div class="container text-center pt-4">
+                <div class="row">
+                    <div class="col">
+                        <h3> Nothing is found :(</h3>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
-    <!-- Markdown editor -->
-</div>
-<!-- /.content-wrapper -->
+    <!-- /.content-wrapper -->
 
 </div>
 <!-- /#wrapper -->
-
-<script>
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass("active");
-    });
-</script>
 </body>
-
 </html>

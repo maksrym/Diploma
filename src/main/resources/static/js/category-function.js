@@ -37,7 +37,7 @@ function updateCategoryList() {
         {
             language: language
         }
-    ).done(function (data) {
+    ).always(function (data) {
         var select = $("#category-name");
 
         select.select2("destroy");
@@ -48,7 +48,7 @@ function updateCategoryList() {
             option.val(category.id).text(category.name);
 
             select.append(option);
-        })
+        });
 
         select.select2({
             dropdownParent: $('#addCategoryWindow'),

@@ -1,5 +1,4 @@
-
-function uploadArticle(element) {
+function updateArticle(element) {
     $(element).prop("disabled", true);
 
     var articleTitle = $("#article-title").val();
@@ -7,7 +6,7 @@ function uploadArticle(element) {
     var articleText = markdownEditor.value();
     var articleLanguage = $("#language").val();
 
-    if(titleIsEmpty(articleTitle) || textAreaIsEmpty(articleText)) {
+    if(textAreaIsEmpty(articleText)) {
         return;
     }
 
@@ -22,7 +21,7 @@ function uploadArticle(element) {
     article.pageId = getUrlParameter("page");
 
     $.ajax({
-        url: "/article/add",
+        url: decodeURI("/article/edit/" + articleTitle),
         method: "POST",
         contentType: "application/json",
         dataType : "json",
@@ -30,22 +29,6 @@ function uploadArticle(element) {
     }).always(function () {
         window.location.href = "/article/" + encodeURI(articleTitle);
     });
-}
-
-function titleIsEmpty(title) {
-    if(!title) {
-        var titleField = $("#article-title");
-
-        titleField.addClass("is-invalid");
-        titleField.keydown(function() {
-            if (this.value) {
-                titleField.removeClass("is-invalid");
-                titleField.off("keydown");
-            }
-        });
-        return true;
-    }
-    return false;
 }
 
 function textAreaIsEmpty(text) {

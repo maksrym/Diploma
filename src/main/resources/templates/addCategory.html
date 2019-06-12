@@ -42,7 +42,14 @@
     <!-- Select2 Bootstrap -->
 
     <script src="js/technical-function.js"></script>
-
+    <script>
+        function searchRequest() {
+            var searchRequest = $("#search-request").val();
+            searchRequest = encodeURI(searchRequest);
+            window.location.href = "/search?request=" + searchRequest;
+            return false;
+        }
+    </script>
 </head>
 
 <body id="page-top">
@@ -52,13 +59,14 @@
     <a class="navbar-brand mr-1" href="/">Aviation directory</a>
 
     <!-- Navbar Search -->
-    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+    <form class="d-md-inline-block form-inline ml-auto mr-1 mr-md-3 my-2 my-md-0"
+          onsubmit="return searchRequest()" id="search">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Search for..." aria-label="Search"
-                   aria-describedby="basic-addon2">
+                   aria-describedby="basic-addon2" id="search-request">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                    <i class="fa fa-search "></i>
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-search"></i>
                 </button>
             </div>
         </div>
@@ -119,7 +127,7 @@
                 <div class="form-group row">
                     <div class="col">
                         <button type="button" class="btn btn-success btn-block" id="add-category"
-                                onclick="uploadCategory()">Add Category
+                                onclick="uploadCategory(this)">Add Category
                         </button>
                     </div>
                 </div>
@@ -201,7 +209,9 @@
         };
     }
 
-    function uploadCategory() {
+    function uploadCategory(element) {
+        $(element).prop("disabled", true);
+
         var category = new Object();
         category.language = $("#language").val();
         category.name = $("#category-name").val().trim();
@@ -227,8 +237,8 @@
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(category)
-        }).done(function () {
-            alert("Done!");
+        }).always(function () {
+            window.location.href = "/category/" + decodeURI(category.name);
         });
     }
 </script>

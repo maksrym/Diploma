@@ -9,8 +9,10 @@ import model.Article;
 import model.Category;
 import model.Page;
 import org.hibernate.Hibernate;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.client.HttpClientErrorException;
@@ -37,15 +39,18 @@ public class ServiceImpl implements Service {
     private PageRepository pageRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Article getArticle(String articleTitle) {
-        return null;
+        Article article = articleRepository.findFirstByTitle(articleTitle);;
+        Hibernate.initialize(article.getCategories());
+        return article;
     }
 
     @Override
     @Transactional
     public void fillArticleModel(String articleTitle, Model model) throws UnsupportedEncodingException {
         articleTitle = URLDecoder.decode(articleTitle, "UTF-8");
-        Article article = articleRepository.findByTitle(articleTitle);
+        Article article = articleRepository.findFirstByTitle(articleTitle);
 
         if (article == null) {
             throw new RuntimeException("Article: " + articleTitle + " is not found.");
@@ -87,18 +92,26 @@ public class ServiceImpl implements Service {
     }
 
     @Override
-    @Transactional
-    public void addArticle(NewArticleDTO articleDTO) throws ArticleIsAlreadyExist {
-        Article article = new Article(articleDTO.getTitle(), articleDTO.getText(), articleDTO.getLanguage());
+    public void addArticle(Article article) throws ArticleIsAlreadyExist {
 
         Page page;
-        if (articleDTO.getPageId() == null) {
+        if (article.getPage() == null) {
             page = new Page();
             pageRepository.save(page);
         } else {
-            page = pageRepository.findById(articleDTO.getPageId()).get();
+            page = pageRepository.findById(article.getPage().getId()).get();
         }
         article.setPage(page);
+
+
+
+        articleRepository.save(article);
+    }
+
+    @Override
+    @Transactional
+    public void addArticle(NewArticleDTO articleDTO) throws ArticleIsAlreadyExist {
+        Article article = new Article(articleDTO.getTitle(), articleDTO.getText(), articleDTO.getLanguage());
 
         List<Category> categories = new ArrayList<>();
         for (CategoryDTO categoryDTO : articleDTO.getCategories()) {
@@ -114,12 +127,26 @@ public class ServiceImpl implements Service {
         article.setUploadTime(articleDTO.getUploadTime());
         article.setLastChange(articleDTO.getUploadTime());
 
-        articleRepository.save(article);
+        addArticle(article);
     }
 
     @Override
-    public void amendArticle(String articleTitle, NewArticleDTO article) {
+    @Transactional
+    public void amendArticle(String articleTitle, NewArticleDTO articleDTO) {
+        Article article = articleRepository.findFirstByTitle(articleTitle);
+        article.setText(articleDTO.getText());
+        article.setLastChange(new DateTime());
 
+        List<CategoryDTO> categoryDTOs = articleDTO.getCategories();
+        List<Category> categories = new ArrayList<>();
+
+        for(CategoryDTO categoryDTO : categoryDTOs) {
+            Category category = categoryRepository.findById(categoryDTO.getId()).get();
+            categories.add(category);
+        }
+
+        article.setCategories(categories);
+        articleRepository.save(article);
     }
 
     @Override
@@ -134,7 +161,7 @@ public class ServiceImpl implements Service {
         Page page = pageRepository.findById(id).get();
         List<Article> articles = page.getArticles();
 
-        for(Article article : articles) {
+        for (Article article : articles) {
             for (Language requiredLanguage : requiredLanguages) {
                 if (requiredLanguage.equals(article.getLanguage())) {
                     requiredLanguages.remove(article.getLanguage());
@@ -143,7 +170,7 @@ public class ServiceImpl implements Service {
             }
         }
 
-        if(requiredLanguages.isEmpty()) {
+        if (requiredLanguages.isEmpty()) {
             throw new RuntimeException("Page already has all translations.");
         }
 
@@ -152,7 +179,7 @@ public class ServiceImpl implements Service {
 
     @Override
     public List<CategoryDTO> getCategoryDTOByLanguage(String language) {
-        List<Category> categories = categoryRepository.getCategoriesByLanguage(Language.valueOf(language));
+        List<Category> categories = categoryRepository.findAllByLanguageOrderByNameAsc(Language.valueOf(language));
 
         List<CategoryDTO> categoriesDTO = new ArrayList<>();
         categories.forEach(category -> {
@@ -183,13 +210,13 @@ public class ServiceImpl implements Service {
 
     @Override
     public List<Category> getAllRootCategories(Language language) {
-        return categoryRepository.findAllByParentCategoryAndLanguage(null, language);
+        return categoryRepository.findAllByParentCategoryAndLanguageOrderByNameAsc(null, language);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Article> getArticlesWithoutCategory(Language language) {
-        return articleRepository.findAllByCategoriesAndLanguage(null, language);
+        return articleRepository.findAllByCategoriesAndLanguageOrderByTitle(null, language);
     }
 
     @Override
@@ -208,5 +235,27 @@ public class ServiceImpl implements Service {
             categoryParent = categoryParent.getParentCategory();
         }
         return categories;
+    }
+
+    @Override
+    public List<Category> findCategories(String category) {
+        if (category.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return categoryRepository.findAllByNameContains(category);
+    }
+
+    @Override
+    public List<Article> findArticles(String article) {
+        if (article.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return articleRepository.findAllByTitleContainsOrAbbreviationContainsOrTextContains(article, article, article);
+    }
+
+    @Override
+    public void deleteArticle(String articleTitle) {
+        Article article = articleRepository.findFirstByTitle(articleTitle);
+        articleRepository.delete(article);
     }
 }

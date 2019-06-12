@@ -16,7 +16,8 @@ public interface Service {
     Article getArticle(String articleTitle);
     List<Article> getArticlesWithoutCategory(Language language);
     void fillArticleModel(String articleTitle, Model model) throws UnsupportedEncodingException;
-    void addArticle(NewArticleDTO articleDTO) throws ArticleIsAlreadyExist;
+    void addArticle(NewArticleDTO articleDTO);
+    void addArticle(Article article) throws ArticleIsAlreadyExist;
     void amendArticle(String articleTitle, NewArticleDTO article);
     List<Language> getPageRequiredLanguages(Long id);
 
@@ -25,4 +26,8 @@ public interface Service {
     List<CategoryDTO> getCategoryDTOByLanguage(Language language);
     List<Category> getCategoryTree(String categoryName);
     void addCategory(CategoryDTO categoryDTO);
+
+    List<Category> findCategories(String category);
+    List<Article> findArticles(String article);
+    void deleteArticle(String articleTitle);
 }

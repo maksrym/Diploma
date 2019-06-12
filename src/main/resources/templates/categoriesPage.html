@@ -48,7 +48,18 @@
     <script src="/js/category-function.js"></script>
     <script src="/js/upload-article.js"></script>
     <script src="/js/technical-function.js"></script>
-    <script type="text/javascript">
+    <script>
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass("active");
+            });
+        });
+        function searchRequest() {
+            var searchRequest = $("#search-request").val();
+            searchRequest = encodeURI(searchRequest);
+            window.location.href = "/search?request=" + searchRequest;
+            return false;
+        }
     </script>
 </head>
 
@@ -59,12 +70,13 @@
     <a class="navbar-brand mr-1" href="/">Aviation directory</a>
 
     <!-- Navbar Search -->
-    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+    <form class="d-md-inline-block form-inline ml-auto mr-1 mr-md-3 my-2 my-md-0"
+          onsubmit="return searchRequest()" id="search">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Search for..." aria-label="Search"
-                   aria-describedby="basic-addon2">
+                   aria-describedby="basic-addon2" id="search-request">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-primary" type="submit">
                     <i class="fa fa-search"></i>
                 </button>
             </div>
@@ -134,7 +146,7 @@
         <div class="row px-5 pb-0">
             <div class="col-auto pl-0 pr-0">
                 <button class="btn btn-link text-dark py-0" id="sidebarCollapse">
-                    <i class="fa fa-language fa-2x"></i>
+                    <i class="fa fa-language language fa-2x"></i>
                 </button>
             </div>
             <div class="col-auto pl-0">
@@ -147,7 +159,7 @@
             </div>
         </div>
         <div class="row px-5">
-            <div class="col-3" th:each="subcategory : ${subcategories}">
+            <div class="col-4" th:each="subcategory : ${subcategories}">
                 <h5>
                     <a class="link" th:href="@{/category/{subcategory}(subcategory=${subcategory.name})}">
                         <span th:text="${subcategory.name}">ssss</span>
@@ -181,11 +193,5 @@
 
 </div>
 <!-- /#wrapper -->
-
-<script>
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass("active");
-    });
-</script>
 </body>
 </html>
