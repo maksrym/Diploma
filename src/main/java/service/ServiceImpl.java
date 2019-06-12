@@ -93,17 +93,12 @@ public class ServiceImpl implements Service {
 
     @Override
     public void addArticle(Article article) throws ArticleIsAlreadyExist {
-
         Page page;
         if (article.getPage() == null) {
             page = new Page();
             pageRepository.save(page);
-        } else {
-            page = pageRepository.findById(article.getPage().getId()).get();
+            article.setPage(page);
         }
-        article.setPage(page);
-
-
 
         articleRepository.save(article);
     }
@@ -123,6 +118,15 @@ public class ServiceImpl implements Service {
             article.setAbbreviation(articleDTO.getAbbreviation());
         }
 
+        Page page;
+        if (articleDTO.getPageId() == null) {
+            page = new Page();
+            pageRepository.save(page);
+        } else {
+            page = pageRepository.findById(articleDTO.getPageId()).get();
+        }
+
+        article.setPage(page);
         article.setCategories(categories);
         article.setUploadTime(articleDTO.getUploadTime());
         article.setLastChange(articleDTO.getUploadTime());
